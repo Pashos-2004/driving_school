@@ -37,8 +37,8 @@ public class screenSettings {
 			throw new SystemRequirementsError(DefaultErrors.SCREEN_SIZE_IS_TOO_SMALL);
 		}
 		
-		commonData.appWidth = commonData.screenWidth/2;
-		commonData.appHeight = commonData.screenHeigh/2;
+		commonData.appWidth = 1280;
+		commonData.appHeight = 720;
 		
 		Dimension minDim = new Dimension(commonData.MIN_SCREEN_WIDTH,commonData.MIN_SCREEN_HEIGHT);
 		Dimension maxDim = GetMaxDim(commonData.screenHeigh,commonData.screenWidth);

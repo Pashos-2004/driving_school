@@ -19,6 +19,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import driving_school_maven.driving_school_maven.main;
+import driving_school_maven.driving_school_maven.userInfo;
 import DataBaseControl.authorization;
 import MyExeptions.DefaultErrors;
 import MyExeptions.LogWriter;
@@ -68,12 +69,17 @@ public class authWindow {
 					
 					
 					if(authorization.authUser(login,passwd) && passwd.length()>0 && login.length()>0) {
+						userInfo.LoadUserFromDB(login);
 						main.JF.dispose();
-						main.JF=mainWindow.GetMainJFrame();
+						
+						//main.JF=mainWindow.GetMainJFrame();	
+						if(userInfo.role.equals("Ученик")) main.JF=mainWindow.GetUserMainJFrame();
+						else main.JF=mainWindow.GetAdminMainJFrame();
+						
 						currentWindowInfo.SetCurFrame(main.JF);
 						return;
 					}					
-					JOptionPane.showMessageDialog(currentWindowInfo.GetCurFrame(), "Пользователь не авторизован, проверьте логин и пароль", 
+					JOptionPane.showMessageDialog(main.JF, "Пользователь не авторизован, проверьте логин и пароль", 
 			                "Ошибка авторизации", JOptionPane.ERROR_MESSAGE);
 					LogWriter.WriteLog(DefaultErrors.AUTH_ERROR+"\n"+"User authorization denied, incorrect data");
 				}

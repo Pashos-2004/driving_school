@@ -36,7 +36,7 @@ public class postgreSQLConnection {
 			System.exit(DefaultErrors.DB_ERROR_KODE);
 		}
 		
-		LogWriter.WriteLog("Successful connection to the database");
+		LogWriter.WriteLog(commonData.DB_CONNECTION_SUCCESS_LOG);
 		return connection;
 	}
 	

@@ -1,33 +1,43 @@
 package WindowsControl;
 
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
+import DataBaseControl.authorization;
 import MyExeptions.DefaultErrors;
 import MyExeptions.LogWriter;
 import driving_school_maven.driving_school_maven.commonFunctions;
 import driving_school_maven.driving_school_maven.main;
 import driving_school_maven.driving_school_maven.screenSettings;
+import driving_school_maven.driving_school_maven.userInfo;
 
 public class mainWindow {
+	protected static JPanel curPanel = new JPanel();
+	
 	public static JFrame GetMainJFrame() {
-		main.JF = new JFrame() {};
+		JFrame JF = new JFrame() {};
 		BufferedImage appIcon;
 		try {
-			main.JF = screenSettings.SetScreenSizeForMainWindow(main.JF);
+			JF = screenSettings.SetScreenSizeForMainWindow(JF);
 			
-			main.JF.setVisible(true);
-			main.JF.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			main.JF.setTitle("Driving school clinet");
-			main.JF.addComponentListener(commonFunctions.createResizeAdapterForDefWindows(main.JF));
+			
+			JF.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			JF.setTitle("Driving school clinet");
+			JF.addComponentListener(commonFunctions.createResizeAdapterForDefWindows(JF));
 		
 		try {
 			appIcon = ImageIO.read(new File("src/pictures/icon.png"));
-			main.JF.setIconImage(appIcon);
+			JF.setIconImage(appIcon);
 		} catch (IOException e) {
 			e.printStackTrace();
 			LogWriter.WriteLog(DefaultErrors.PICTURE_LOAD_ERROR+" icon.png : \n "+e.getMessage());
@@ -38,7 +48,139 @@ public class mainWindow {
 		}
 		
 		
-			return main.JF;
+			return JF;
 		
 	}
+	
+	public static JFrame GetUserMainJFrame() {
+		
+		//System.out.println("sasda");
+		JFrame JF = mainWindow.GetMainJFrame();
+		
+		JButton exitBTN = new JButton();
+		
+		exitBTN.setBounds(1180, 0, 100, 20);
+		exitBTN.setText("Выход");
+		exitBTN.setBackground(new Color(230, 1, 1));
+		exitBTN.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				userInfo.ClearUser();
+				main.JF.dispose();
+				main.JF = authWindow.GetAuthWindow();
+				currentWindowInfo.SetCurFrame(main.JF);
+			}
+		});
+		
+		JButton workoutBTN = new JButton();
+		workoutBTN.setBounds(465, 100, 350, 20);
+		workoutBTN.setText("Тренировка");
+		workoutBTN.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		JButton examBTN = new JButton();
+		examBTN.setBounds(465, 140, 350, 20);
+		examBTN.setText("Экзамен");
+		examBTN.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		
+		JButton userStatisticBTN = new JButton();
+		userStatisticBTN.setBounds(465, 180, 350, 20);
+		userStatisticBTN.setText("Посмотреть стистику");
+		userStatisticBTN.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		
+		JButton userCabinetBTN = new JButton();
+		userCabinetBTN.setBounds(465, 220, 350, 20);
+		userCabinetBTN.setText("Личный кабинет");
+		userCabinetBTN.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				 
+				main.JF.dispose();
+				main.JF = userCabinet.GetUserCabinetJFrame();
+				
+			}
+		});
+		
+		JPanel userMainPanel = new JPanel();
+		userMainPanel.setLayout(null);
+		
+		userMainPanel.add(exitBTN);
+		userMainPanel.add(userCabinetBTN);
+		
+		userMainPanel.add(userStatisticBTN);
+		userMainPanel.add(workoutBTN);
+		userMainPanel.add(examBTN);
+		
+		JF.add(userMainPanel);
+		curPanel = userMainPanel;
+		
+		JF.setVisible(true);
+		
+		return JF;
+	}
+	
+	public static JFrame GetAdminMainJFrame() {
+		JFrame JF=mainWindow.GetMainJFrame();
+		//System.out.println("gsaGHERDSF");
+		
+		JButton exitBTN = new JButton();
+		
+		exitBTN.setBounds(1080, 0, 200, 20);
+		exitBTN.setText("Выход");
+		exitBTN.setBackground(new Color(223, 21, 21));
+		exitBTN.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				userInfo.ClearUser();
+				main.JF.dispose();
+				main.JF = authWindow.GetAuthWindow();
+				currentWindowInfo.SetCurFrame(main.JF);
+			}
+		});
+		
+		JButton userCabinetBTN = new JButton();
+		
+		userCabinetBTN.setBounds(440, 300, 200, 20);
+		userCabinetBTN.setText("Выход");
+		
+		userCabinetBTN.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				
+			}
+		});
+		
+		
+
+		
+		
+		
+		
+		JPanel adminMainPanel = new JPanel();
+		adminMainPanel.setLayout(null);
+		
+		adminMainPanel.add(userCabinetBTN);
+		adminMainPanel.add(exitBTN);
+		
+		JF.add(adminMainPanel);
+		curPanel=adminMainPanel;
+		JF.setVisible(true);
+		
+		return JF;
+	}
+	
 }
