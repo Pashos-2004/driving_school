@@ -45,6 +45,8 @@ public class mainWindow {
 		
 		} catch (Exception e) {
 			System.exit(DefaultErrors.MAIN_WINDOW_ERROR_KODE);
+			
+			
 		}
 		
 		
@@ -78,7 +80,8 @@ public class mainWindow {
 		workoutBTN.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				main.JF.dispose();
+				main.JF = questionWindows.GetWorkoutJFrame();
 			}
 		});
 		JButton examBTN = new JButton();

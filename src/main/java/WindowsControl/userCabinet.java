@@ -3,7 +3,11 @@ package WindowsControl;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -24,6 +28,17 @@ public class userCabinet {
 
 	public static JFrame GetUserCabinetJFrame() {
 		JFrame JF = new JFrame() {};
+		
+		BufferedImage appIcon;
+
+		
+		try {
+			appIcon = ImageIO.read(new File("src/pictures/icon.png"));
+			JF.setIconImage(appIcon);
+		} catch (IOException e) {
+			e.printStackTrace();
+			LogWriter.WriteLog(DefaultErrors.PICTURE_LOAD_ERROR+" icon.png : \n "+e.getMessage());
+		}
 		
 		JF.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		JF.setTitle("Driving school clinet: UserCabinet");
@@ -80,7 +95,9 @@ public class userCabinet {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				main.JF.dispose();
-				main.JF = mainWindow.GetUserMainJFrame();
+				if(userInfo.role.equals("Ученик")) main.JF = mainWindow.GetUserMainJFrame();
+				else main.JF = mainWindow.GetAdminMainJFrame();
+				
 			}
 		});
 		
