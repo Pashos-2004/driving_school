@@ -37,6 +37,7 @@ public class questionWindows {
 	private static JLabel imageLabel = new JLabel();
 	private static JButton buttonArr[];
 	private static JPanel buttonGroup;
+	private static JButton btns[] = new JButton[5];
 	
 	private static int errorCount = 0;
 	private static int solvedCount = 0;
@@ -138,9 +139,22 @@ public class questionWindows {
 			imageLabel.setIcon(questionIcon);
 			LoadButtonGroup();
 			
-			for(int i = 1;i<curQuestion.countOfAnswers;i++) {
-				JButton btn = new JButton(curQuestion.answers[i]);
-				btn.addActionListener(GetActionListenerForButtonsWorkout(i, curQuestion.right_answer));
+			for(int i = 1;i<curQuestion.countOfAnswers+1;i++) {
+				JButton btn = new JButton("<html><center>"+curQuestion.answers[i]+"</center></html>");
+				btns[i] = btn;
+				btn.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						JButton buffBTN = (JButton) e.getSource();
+						if(buffBTN.getText().equals("<html><center>"+curQuestion.answers[curQuestion.right_answer]+"</center></html>")) {
+							for(int i=1;i<curQuestion.countOfAnswers+1;i++) {
+								btns[i].setBackground(new Color(255,255,0));
+							}
+							btn.setBackground(new Color(0,255,0));
+						}
+						
+					}
+				} );
 				buttonGroup.add(btn);
 			}
 			//workoutJPanel.add(buttonGroup);
@@ -162,33 +176,7 @@ public class questionWindows {
         workoutJPanel.add(buttonGroup);
 	}
 	
-	private static void ActionListenerForButtonsBase() {
-		
-		
-	}
 	
-	private static ActionListener GetActionListenerForButtonsWorkout(int index,int right_index) {
-		ActionListener act = new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				ActionListenerForButtonsBase();
-				
-			}
-		}; 
-		
-		return act;
-	}
-	private static ActionListener GetActionListenerForButtonsExam() {
-		ActionListener act = new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				ActionListenerForButtonsBase();
-				
-			}
-		}; 
-		
-		return act;
-	}
 	
 }
 
@@ -213,10 +201,11 @@ class question {
 			answers = new String[5];
 			for(int i=1;i<=4; i++) {
 				String answ = resSet.getString("answer_"+i);
-				
+				System.out.println(answ);
 				if(answ.equals("")) break;
 				answers[i] = answ;
 				countOfAnswers+=1;
+				
 			}
 			
 		} catch (SQLException e) {
