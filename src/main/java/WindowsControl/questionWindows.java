@@ -16,6 +16,7 @@ import java.util.Stack;
 import javax.print.attribute.standard.OutputDeviceAssigned;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -34,12 +35,16 @@ public class questionWindows {
 	
 	private static JPanel workoutJPanel = new JPanel();
 	private static JButton exitBTN = new JButton();
+	private static JButton showExplanationBTN = new JButton();
+	private static JButton nextQuestionBTN = new JButton();
 	private static JLabel imageLabel = new JLabel();
 	private static JLabel questionLabel = new JLabel();
 	private static JButton buttonArr[];
 	private static JPanel buttonGroup;
 	private static JButton btns[] = new JButton[5];
 	
+	
+	private static boolean isExam = false;
 	private static int errorCount = 0;
 	private static int solvedCount = 0;
 	
@@ -62,13 +67,55 @@ public class questionWindows {
             buttonGroup.add(btn);
         }
         
-		
-       
+        showExplanationBTN.setBounds(20,660,150,20);
+        showExplanationBTN.setText("Объяснение");
+        showExplanationBTN.setVisible(false);
+        showExplanationBTN.addActionListener(new ActionListener() {
+
+        	
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane pane = new JOptionPane("<html><center>"+curQuestion.explanation+"</center></html>", 
+                        JOptionPane.PLAIN_MESSAGE);
+					JDialog dialog = pane.createDialog("Подсказка");
+					
+					dialog.setSize(900, 720); // Устанавливаем нужный размер
+					dialog.setVisible(true);
+					/*
+				JOptionPane.showMessageDialog(main.JF, 
+						"<html><center>"+curQuestion.explanation+"</center></html>", 
+		                "Подсказка", JOptionPane.PLAIN_MESSAGE);
+				*/
+			}
+		}
+        );
+        
+        nextQuestionBTN.setBounds(1080,660,150,20);
+        nextQuestionBTN.setText("Дальше");
+        nextQuestionBTN.setVisible(false);
+        nextQuestionBTN.addActionListener(new ActionListener() {
+
+        	
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(isExam) showNextQuestionExam();
+				else showNextQuestionWorkout();
+					/*
+				JOptionPane.showMessageDialog(main.JF, 
+						"<html><center>"+curQuestion.explanation+"</center></html>", 
+		                "Подсказка", JOptionPane.PLAIN_MESSAGE);
+				*/
+			}
+		}
+        );
+        
+        
         JP.setLayout(null);
         JP.add(questionLabel);
         JP.add(imageLabel);
         JP.add(buttonGroup);
-        
+        JP.add(nextQuestionBTN);
+        JP.add(showExplanationBTN);
 		//workoutJpanel.add(exitBTN);
 		
 		
@@ -114,7 +161,7 @@ public class questionWindows {
 				question qu = new question(resultSet);
 				questions.add(qu);
 			}
-			showNextQuestion();
+			showNextQuestionWorkout();
 		}catch (Exception e) {
 			e.printStackTrace();
 			MyExeptions.LogWriter.WriteLog(MyExeptions.DefaultErrors.QUESTION_FRAME_CREACTIONERROR +"\n"+ e.getMessage() );
@@ -126,15 +173,18 @@ public class questionWindows {
 	}
 	
 
-	public static void showNextQuestion() {
+	public static void showNextQuestionWorkout() {
 		if(questions.isEmpty()) {
 			JOptionPane.showMessageDialog(main.JF, 
 					"Тренировка закончена", 
 	                "Тренажёр", JOptionPane.INFORMATION_MESSAGE);
 			main.JF.dispose();
 			main.JF = mainWindow.GetUserMainJFrame();
+			return;
 		}
 		curQuestion = questions.pop();
+		showExplanationBTN.setVisible(false);
+		nextQuestionBTN.setVisible(false);
 		
 		try {
 			ImageIcon questionIcon = new ImageIcon("src/pictures/question_pic/"+curQuestion.picture_name);
@@ -145,17 +195,32 @@ public class questionWindows {
 			for(int i = 1;i<curQuestion.countOfAnswers+1;i++) {
 				JButton btn = new JButton("<html><center>"+curQuestion.answers[i]+"</center></html>");
 				btns[i] = btn;
+				
 				btn.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
+						boolean res = true;
 						JButton buffBTN = (JButton) e.getSource();
 						btns[curQuestion.right_answer].setBackground(new Color(0,255,0));
 						if(! buffBTN.getText().equals("<html><center>"+curQuestion.answers[curQuestion.right_answer]+"</center></html>")) {
 							btn.setBackground(new Color(255,0,0));
+							res = false;
 						}
 						for(int i=1;i<curQuestion.countOfAnswers+1;i++) {
 							btns[i].setEnabled(false);
 						}
+						try {
+							Connection connection =  postgreSQLConnection.GetConnection();
+							Statement statement = connection.createStatement();
+							statement.execute("insert into answer (user_id, question_id, is_right ) "
+									+ "values("+userInfo.user_id +" , "+ curQuestion.question_id+" , "+ res +")");
+							}catch (Exception e1) {
+								MyExeptions.LogWriter.WriteLog(MyExeptions.DefaultErrors.DB_INSERT_ERROR +"\n"+ e1.getMessage() );
+								System.exit(DefaultErrors.QUESTION_WINDOW_ERROR_KODE);
+							}
+						
+						showExplanationBTN.setVisible(true);
+						nextQuestionBTN.setVisible(true);
 					}
 				} );
 				buttonGroup.add(btn);
@@ -165,7 +230,72 @@ public class questionWindows {
 		}catch (Exception e) {
 			e.printStackTrace();
 			MyExeptions.LogWriter.WriteLog(MyExeptions.DefaultErrors.QUESTION_FRAME_CREACTIONERROR +"\n"+ e.getMessage() );
-				//System.exit(DefaultErrors.QUESTION_WINDOW_ERROR_KODE);
+				System.exit(DefaultErrors.QUESTION_WINDOW_ERROR_KODE);
+		}
+		
+		
+	}
+	
+	
+	public static void showNextQuestionExam() {
+		if(questions.isEmpty()) {
+			JOptionPane.showMessageDialog(main.JF, 
+					"Тренировка закончена", 
+	                "Тренажёр", JOptionPane.INFORMATION_MESSAGE);
+			main.JF.dispose();
+			main.JF = mainWindow.GetUserMainJFrame();
+			return;
+		}
+		curQuestion = questions.pop();
+		showExplanationBTN.setVisible(false);
+		nextQuestionBTN.setVisible(false);
+		
+		try {
+			ImageIcon questionIcon = new ImageIcon("src/pictures/question_pic/"+curQuestion.picture_name);
+			imageLabel.setIcon(questionIcon);
+			questionLabel.setText("<html><center>"+curQuestion.question+"</center></html>");
+			LoadButtonGroup();
+			
+			for(int i = 1;i<curQuestion.countOfAnswers+1;i++) {
+				JButton btn = new JButton("<html><center>"+curQuestion.answers[i]+"</center></html>");
+				btns[i] = btn;
+				
+				btn.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						boolean res = false;
+						JButton buffBTN = (JButton) e.getSource();
+						btns[curQuestion.right_answer].setBackground(new Color(0,255,0));
+						if(! buffBTN.getText().equals("<html><center>"+curQuestion.answers[curQuestion.right_answer]+"</center></html>")) {
+							btn.setBackground(new Color(255,0,0));
+							res = true;
+						}
+						for(int i=1;i<curQuestion.countOfAnswers+1;i++) {
+							btns[i].setEnabled(false);
+						}
+						try {
+							Connection connection =  postgreSQLConnection.GetConnection();
+							Statement statement = connection.createStatement();
+							/*statement.execute("insert into answer (user_id, question_id, is_right ) "
+									+ "values("+userInfo.user_id +" , "+ curQuestion.question_id+" , "+ res +")");
+							*/
+							}catch (Exception e1) {
+								MyExeptions.LogWriter.WriteLog(MyExeptions.DefaultErrors.DB_INSERT_ERROR +"\n"+ e1.getMessage() );
+								System.exit(DefaultErrors.QUESTION_WINDOW_ERROR_KODE);
+							}
+						
+						showExplanationBTN.setVisible(true);
+						nextQuestionBTN.setVisible(true);
+					}
+				} );
+				buttonGroup.add(btn);
+			}
+			//workoutJPanel.add(buttonGroup);
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+			MyExeptions.LogWriter.WriteLog(MyExeptions.DefaultErrors.QUESTION_FRAME_CREACTIONERROR +"\n"+ e.getMessage() );
+				System.exit(DefaultErrors.QUESTION_WINDOW_ERROR_KODE);
 		}
 		
 		
@@ -206,7 +336,7 @@ class question {
 			answers = new String[5];
 			for(int i=1;i<=4; i++) {
 				String answ = resSet.getString("answer_"+i);
-				System.out.println(answ);
+				
 				if(answ.equals("")) break;
 				answers[i] = answ;
 				countOfAnswers+=1;
