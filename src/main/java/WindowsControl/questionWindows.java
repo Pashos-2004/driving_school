@@ -35,6 +35,7 @@ public class questionWindows {
 	private static JPanel workoutJPanel = new JPanel();
 	private static JButton exitBTN = new JButton();
 	private static JLabel imageLabel = new JLabel();
+	private static JLabel questionLabel = new JLabel();
 	private static JButton buttonArr[];
 	private static JPanel buttonGroup;
 	private static JButton btns[] = new JButton[5];
@@ -49,8 +50,8 @@ public class questionWindows {
 		JPanel JP = new JPanel();
 		try {
 		
-        imageLabel.setBounds((1280-480)/2, 50, 480, 180); // Центрируем по горизонтали
-        
+        imageLabel.setBounds((1280-480)/2, 0, 480, 180); // Центрируем по горизонтали
+        questionLabel.setBounds((1280-480)/2, 185, 480, 95);
         buttonGroup = new JPanel();
         buttonGroup.setLayout(new GridLayout(4, 1, 0, 20)); 
         buttonGroup.setBounds(400, 280, 480, 400); 
@@ -64,6 +65,7 @@ public class questionWindows {
 		
        
         JP.setLayout(null);
+        JP.add(questionLabel);
         JP.add(imageLabel);
         JP.add(buttonGroup);
         
@@ -104,7 +106,7 @@ public class questionWindows {
 		try {
 			Connection connection =  postgreSQLConnection.GetConnection();
 			Statement statement = connection.createStatement();
-			ResultSet resultSet = statement.executeQuery("SELECT question_id, picture_file_name,block_num,right_answer, "
+			ResultSet resultSet = statement.executeQuery("SELECT question_id, question ,picture_file_name,block_num,right_answer, "
 					+ "answer_1, answer_2, answer_3, answer_4, explanation "
 					+ " FROM question join picture on picture.picture_id = question.picture_id "
 					+ "ORDER BY random()  LIMIT 10 ; ");
@@ -137,6 +139,7 @@ public class questionWindows {
 		try {
 			ImageIcon questionIcon = new ImageIcon("src/pictures/question_pic/"+curQuestion.picture_name);
 			imageLabel.setIcon(questionIcon);
+			questionLabel.setText("<html><center>"+curQuestion.question+"</center></html>");
 			LoadButtonGroup();
 			
 			for(int i = 1;i<curQuestion.countOfAnswers+1;i++) {
@@ -146,13 +149,13 @@ public class questionWindows {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						JButton buffBTN = (JButton) e.getSource();
-						if(buffBTN.getText().equals("<html><center>"+curQuestion.answers[curQuestion.right_answer]+"</center></html>")) {
-							for(int i=1;i<curQuestion.countOfAnswers+1;i++) {
-								btns[i].setBackground(new Color(255,255,0));
-							}
-							btn.setBackground(new Color(0,255,0));
+						btns[curQuestion.right_answer].setBackground(new Color(0,255,0));
+						if(! buffBTN.getText().equals("<html><center>"+curQuestion.answers[curQuestion.right_answer]+"</center></html>")) {
+							btn.setBackground(new Color(255,0,0));
 						}
-						
+						for(int i=1;i<curQuestion.countOfAnswers+1;i++) {
+							btns[i].setEnabled(false);
+						}
 					}
 				} );
 				buttonGroup.add(btn);
@@ -184,6 +187,7 @@ public class questionWindows {
 
 class question {
 	int question_id;
+	String question;
 	String answers [];
 	String picture_name;
 	int block_num;
@@ -194,6 +198,7 @@ class question {
 		
 		try {
 			question_id = resSet.getInt("question_id");
+			question = resSet.getString("question");
 			picture_name = resSet.getString("picture_file_name");
 			block_num = resSet.getInt("block_num");
 			right_answer = resSet.getInt("right_answer");
