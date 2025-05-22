@@ -72,14 +72,23 @@ public class userCabinet {
 				
 				String password1 = new String( passwd1Field.getPassword());
 				String password2 = new String( passwd2Field.getPassword());
+			
 				
 				if(password1.equals(password2)) {
-				if(passwordChange.ChangePassword(password1)) {
+				
+					if(password1.length()<5) {
+						JOptionPane.showMessageDialog(main.JF, 
+								"Пароль слишком простой", 
+				                "Смена пароля", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+						
+					if(passwordChange.ChangePassword(password1)) {
 					JOptionPane.showMessageDialog(main.JF, 
 						"Пароль успешно сменнён", 
 		                "Смена пароля", JOptionPane.INFORMATION_MESSAGE);
 					LogWriter.WriteLog(commonData.USER_CHANGE_PASSWORD_BY_HIMSELF + "\nUser_ID : "+ userInfo.user_id + "\nUser_login : " + userInfo.login);
-				}else JOptionPane.showMessageDialog(main.JF, "Не удалось сменить пароль, пожалуйста обратитесь к системному администратору", 
+					}else JOptionPane.showMessageDialog(main.JF, "Не удалось сменить пароль, пожалуйста обратитесь к системному администратору", 
 		                "Ошибка смены пароля", JOptionPane.ERROR_MESSAGE);
 				}else JOptionPane.showMessageDialog(main.JF, "Не удалось сменить пароль, пароли не совпадают", 
 		                "Ошибка смены пароля", JOptionPane.ERROR_MESSAGE);

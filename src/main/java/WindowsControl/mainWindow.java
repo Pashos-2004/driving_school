@@ -155,20 +155,56 @@ public class mainWindow {
 		});
 		
 		JButton userCabinetBTN = new JButton();
-		
-		userCabinetBTN.setBounds(440, 300, 200, 20);
-		userCabinetBTN.setText("Выход");
-		
+		userCabinetBTN.setBounds(465, 220, 350, 20);
+		userCabinetBTN.setText("Личный кабинет");
 		userCabinetBTN.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				 
+				main.JF.dispose();
+				main.JF = userCabinet.GetUserCabinetJFrame();
 				
 			}
 		});
 		
+		JButton groupControlBTN = new JButton();
+		groupControlBTN.setBounds(465, 260, 350, 20);
+		groupControlBTN.setText("Управление группами");
+		groupControlBTN.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				 
+				main.JF.dispose();
+				main.JF = groupControl.GetGroupControlFrame();
+				
+			}
+		});
 		
-
+		JButton userControlBTN = new JButton();
+		userControlBTN.setBounds(465, 300, 350, 20);
+		userControlBTN.setText("Управление пользователями");
+		userControlBTN.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				 
+				main.JF.dispose();
+				main.JF = userControl.GetUserComntrolFrame();
+				
+			}
+		});
+		
+		JButton planExamBTN = new JButton();
+		planExamBTN.setBounds(465, 340, 350, 20);
+		planExamBTN.setText("Запланировать экзамен");
+		planExamBTN.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				 
+				main.JF.dispose();
+				main.JF = planExam.GetPlanExamFrame();
+				
+			}
+		});
 		
 		
 		
@@ -176,6 +212,9 @@ public class mainWindow {
 		JPanel adminMainPanel = new JPanel();
 		adminMainPanel.setLayout(null);
 		
+		adminMainPanel.add(planExamBTN);
+		adminMainPanel.add(groupControlBTN);
+		adminMainPanel.add(userControlBTN);
 		adminMainPanel.add(userCabinetBTN);
 		adminMainPanel.add(exitBTN);
 		

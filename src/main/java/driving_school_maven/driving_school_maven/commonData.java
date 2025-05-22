@@ -23,6 +23,12 @@ public class commonData {
 	public static final int USER_CABINET_WINDOW_WIGTH = 300;
 	public static final int USER_CABINET_WINDOW_HEIGHT = 400;
 	
+	public static final int GROUP_CONTROL_WINDOW_WIGTH = 500;
+	public static final int GROUP_CONTROL_WINDOW_HEIGHT = 400;
+	
+	public static final int PLAN_EXAM_WINDOW_WIGTH = 300;
+	public static final int PLAN_EXAM_WINDOW_HEIGHT = 400;
+	
 	public static final int MIN_SCREEN_WIDTH = 1280;
 	public static final int MIN_SCREEN_HEIGHT = 720;
 	
