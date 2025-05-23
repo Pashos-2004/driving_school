@@ -18,6 +18,8 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import org.jdesktop.swingx.JXDatePicker;
 
@@ -25,6 +27,7 @@ import DataBaseControl.postgreSQLConnection;
 import MyExeptions.DefaultErrors;
 import MyExeptions.LogWriter;
 import driving_school_maven.driving_school_maven.commonData;
+import driving_school_maven.driving_school_maven.exam;
 import driving_school_maven.driving_school_maven.group;
 import driving_school_maven.driving_school_maven.main;
 import driving_school_maven.driving_school_maven.userInfo;
@@ -34,6 +37,11 @@ public class planExam {
 	private static ArrayList<group> groups = new ArrayList<group>(20); 
 	private static int curGroupIndexInArray = 1;
 	private static JComboBox<String> groupComboBox ;
+	
+	private static ArrayList<exam> exams = new ArrayList<exam>(20); 
+	private static int curExamIndexInArray = 1;
+	private static JComboBox<String> examComboBox ;
+	
 	private static JXDatePicker datePicker;
 	//private static JPanel curJP;
 	public static JFrame GetPlanExamFrame() {
@@ -71,14 +79,17 @@ public class planExam {
 		JLabel datePickerLabel = new JLabel("Выберите дату экзамена"); 
 		datePickerLabel.setBounds(20,10,150,15);
 		
+		Date today = new Date();
 		datePicker = new JXDatePicker();
         datePicker.setFormats(new SimpleDateFormat("dd.MM.yyyy"));
-		datePicker.setBounds(20,26,150,25);
+        datePicker.getMonthView().setLowerBound(today);
+        datePicker.setBounds(20,26,150,25);
         
 		JLabel groupPickerLabel = new JLabel("Выберите группу"); 
 		groupPickerLabel.setBounds(20,53,150,15);
 		
 		groupComboBox = GetDefaultGroupComboBox();
+		examComboBox = GetDefaultExamComboBox();
 		
 		JButton planExamBTN = new JButton();
 		planExamBTN.setText("Запланировать");
@@ -117,10 +128,48 @@ public class planExam {
 					LogWriter.WriteLog(DefaultErrors.PLAN_EXAM_ERROR+"\n "+e1.getMessage());
 					
 				}
-				
+				loadExamComboBox();
 			}
 		});
 		
+		
+		JButton deleteExamBTN = new JButton();
+		deleteExamBTN.setBounds(20,178,220,20);
+		deleteExamBTN.setText("Удалить экзамен");
+		deleteExamBTN.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if(JOptionPane.showConfirmDialog(main.JF, "Вы уверены, что хотите удалить экзамен?", "Предупреждение",
+							JOptionPane.INFORMATION_MESSAGE )!=JOptionPane.OK_OPTION) return;
+					
+					Connection connection =  postgreSQLConnection.GetConnection();
+					Statement statement = connection.createStatement();
+					ResultSet resultSet = statement.executeQuery("Select * from mark where exam_id = "+exams.get(curExamIndexInArray).examId);
+					
+					if(resultSet.next()) {
+						JOptionPane.showMessageDialog(main.JF, "Не удалось удалить экзамен, так как он уже был проведён", 
+				                "Ошибка планирования", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					
+					statement.execute("delete from exam where exam_id = " + exams.get(curExamIndexInArray).examId);
+					JOptionPane.showMessageDialog(main.JF, "Экзамен удалён !", 
+			                "Планирование", JOptionPane.INFORMATION_MESSAGE);
+					LogWriter.WriteLog("Exam deleted by : "+userInfo.login+" "+"\n for : "  +exams.get(curExamIndexInArray).group_name + " date : " + exams.get(curExamIndexInArray).plan_date);
+					loadExamComboBox();
+				}catch (Exception e1) {
+					JOptionPane.showMessageDialog(main.JF, "Не удалось удалить экзамен", 
+			                "Ошибка планирования", JOptionPane.ERROR_MESSAGE);
+					LogWriter.WriteLog(DefaultErrors.PLAN_EXAM_ERROR+"\n "+e1.getMessage());
+					
+				}
+				loadExamComboBox();
+				
+				
+				
+			}
+		});
 		
         JPanel planExamPanel = new JPanel();
 		planExamPanel.setLayout(null);
@@ -131,11 +180,13 @@ public class planExam {
 		planExamPanel.add(datePickerLabel);
 		planExamPanel.add(exitBTN);
 		planExamPanel.add(datePicker);
+		planExamPanel.add(examComboBox);
+		planExamPanel.add(deleteExamBTN);
 		
 		JF.add(planExamPanel);
 		
 		loadComboBox();
- 
+		loadExamComboBox();
 		}catch (Exception e) {
 			LogWriter.WriteLog(DefaultErrors.EXAM_PLAN_FRAME_CREATION_ERROR+e.getMessage());
 			System.exit(DefaultErrors.GROUP_CONTROL_WINDOW_ERROR_KODE);
@@ -183,6 +234,51 @@ public class planExam {
 				for(int i=0; i<groups.size();i++) {
 					if(groups.get(i).groupName.equals(selected)) {
 						curGroupIndexInArray = i;
+						break;
+					}
+				}
+			}
+		});
+		return comboBox;
+	}
+	
+	public static void loadExamComboBox() {
+		String query = "Select _group.name_, exam.exam_id, plan_date  from exam join _group on _group.group_id=exam.group_id "
+				+ "where plan_date >= CURRENT_DATE  ORDER BY  plan_date";
+		
+		try {
+			 
+			Connection connection =  postgreSQLConnection.GetConnection();
+			Statement statement = connection.createStatement();
+			ResultSet resultSet = statement.executeQuery(query);
+			exams = new ArrayList<exam>(20);
+			while (resultSet.next()) {
+				exams.add(new exam(resultSet));
+			}
+			examComboBox.removeAllItems();
+			for(int i=0; i<exams.size();i++) {
+				examComboBox.addItem((exams.get(i)).outputData );
+			}
+			
+			
+		}catch (Exception e) {
+			LogWriter.WriteLog(DefaultErrors.GROUP_CONTROL_FRAME_CREATION_ERROR+e.getMessage());
+			System.exit(DefaultErrors.GROUP_CONTROL_WINDOW_ERROR_KODE);
+		}
+		
+	}
+	
+	public static JComboBox<String> GetDefaultExamComboBox() {
+		JComboBox<String> comboBox = new JComboBox();
+		comboBox = new JComboBox<String>();
+		comboBox.setBounds(20,150,220,20);
+		comboBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String selected = (String) examComboBox.getSelectedItem();
+				for(int i=0; i<exams.size();i++) {
+					if(exams.get(i).outputData.equals(selected)) {
+						curExamIndexInArray = i;
 						break;
 					}
 				}

@@ -12,7 +12,7 @@ public class DefaultErrors {
 	
 	public static final int AUTH_ERROR_KODE = -300;
 	public static final int USER_LOAD_ERROR_KODE = -301;
-	
+	public static final int EXAM_LOAD_ERROR_KODE = -301;
 	
 	public static final int GROUP_ITEM_ERROR = -400;
 	
@@ -36,6 +36,7 @@ public class DefaultErrors {
 	public static final String QUESTION_FRAME_CREACTIONERROR = "Question frame creaction error : " ;
 	public static final String GROUP_CONTROL_FRAME_CREATION_ERROR = "Group control frame creation error : ";
 	public static final String EXAM_PLAN_FRAME_CREATION_ERROR = "Exam plan frame creation error : ";
+	public static final String EXAM_LOAD_ERROR = "Exam load error : ";
 	public static final String USER_CONTROL_FRAME_CREATION_ERROR = "User control frame creation error : ";
 	
 }

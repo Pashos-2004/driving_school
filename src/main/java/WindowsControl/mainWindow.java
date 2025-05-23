@@ -195,7 +195,7 @@ public class mainWindow {
 		
 		JButton planExamBTN = new JButton();
 		planExamBTN.setBounds(465, 340, 350, 20);
-		planExamBTN.setText("Запланировать экзамен");
+		planExamBTN.setText("Планировщик экзамнов");
 		planExamBTN.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

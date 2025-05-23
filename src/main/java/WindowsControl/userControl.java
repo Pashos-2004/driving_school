@@ -57,6 +57,7 @@ public class userControl {
 			groupComboBox = GetDefaultGroupComboBox();
 			userComboBox = GetDefaultUserComboBox();
 			
+			
 			isShowNonActiveGroup = new JCheckBox("Показать неактивные группы?",false);
 			//isShowNonActiveGroup.setText();
 			isShowNonActiveGroup.setBounds(10,70,270,20);
