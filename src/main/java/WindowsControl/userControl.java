@@ -33,7 +33,7 @@ public class userControl {
 	
 	private static JCheckBox isShowNonActiveGroup;
 	
-	public static JFrame GetUserComntrolFrame() {
+	public static JFrame GetUserControlFrame() {
 		JFrame JF = mainWindow.GetMainJFrame();
 		try {
 			

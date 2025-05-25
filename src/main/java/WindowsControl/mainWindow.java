@@ -188,8 +188,8 @@ public class mainWindow {
 			public void actionPerformed(ActionEvent e) {
 				 
 				main.JF.dispose();
-				main.JF = userControl.GetUserComntrolFrame();
-				
+				//main.JF = userControl.GetUserComntrolFrame();
+				main.JF = userControlMenu.GetUserControlMenuFrame();
 			}
 		});
 		
