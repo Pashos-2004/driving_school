@@ -90,7 +90,8 @@ public class mainWindow {
 		examBTN.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				main.JF.dispose();
+				main.JF = questionWindows.GetExamJFrame();
 			}
 		});
 		
@@ -100,7 +101,8 @@ public class mainWindow {
 		userStatisticBTN.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				main.JF.dispose();
+				main.JF = userStatistic.GetStatisticJF(userInfo.user_id);
 			}
 		});
 		
@@ -206,7 +208,16 @@ public class mainWindow {
 			}
 		});
 		
-		
+		JButton userStatisticBTN = new JButton();
+		userStatisticBTN.setBounds(465, 380, 350, 20);
+		userStatisticBTN.setText("Отчёты");
+		userStatisticBTN.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				main.JF.dispose();
+				main.JF = reportsMenu.GetReportsMenuJF();
+			}
+		});
 		
 		
 		JPanel adminMainPanel = new JPanel();
@@ -217,6 +228,7 @@ public class mainWindow {
 		adminMainPanel.add(userControlBTN);
 		adminMainPanel.add(userCabinetBTN);
 		adminMainPanel.add(exitBTN);
+		adminMainPanel.add(userStatisticBTN);
 		
 		JF.add(adminMainPanel);
 		curPanel=adminMainPanel;

@@ -31,8 +31,11 @@ public class main {
 	
 	public static void main (String arg[]) {
 				
-		JF = authWindow.GetAuthWindow();
+		
+		postgreSQLConnection.loadConfigFromFile("driving_school.conf");
 		currentWindowInfo.SetCurFrame(JF);
+		JF = authWindow.GetAuthWindow();
+		
 		
 	}
 	

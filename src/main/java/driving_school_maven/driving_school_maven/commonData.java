@@ -23,11 +23,23 @@ public class commonData {
 	public static final int USER_CREATRE_WINDOW_WIGTH = 300;
 	public static final int USER_CREATRE_WINDOW_HEIGHT = 450;
 	
+	public static final int USER_CHANGE_WINDOW_WIGTH = 300;
+	public static final int USER_CHANGE_WINDOW_HEIGHT = 450;
+	
 	public static final int USER_CONTROL_MENU_WINDOW_WIGTH = 300;
 	public static final int USER_CONTROL_MENU_WINDOW_HEIGHT = 400;
 	
 	public static final int USER_CABINET_WINDOW_WIGTH = 300;
 	public static final int USER_CABINET_WINDOW_HEIGHT = 400;
+	
+	public static final int USER_STATISTIC_WINDOW_WIGTH = 1280;
+	public static final int USER_STATISTIC_WINDOW_HEIGHT = 720;
+	
+	public static final int REPORTS_WINDOW_WIGTH = 300;
+	public static final int REPORTS_WINDOW_HEIGHT = 400;
+	
+	public static final int SMALL_REPORTS_WINDOW_WIGTH = 400;
+	public static final int SMALL_REPORTS_WINDOW_HEIGHT = 250;
 	
 	public static final int GROUP_CONTROL_WINDOW_WIGTH = 500;
 	public static final int GROUP_CONTROL_WINDOW_HEIGHT = 400;

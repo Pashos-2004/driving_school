@@ -7,7 +7,9 @@ public class DefaultErrors {
 	public static final int GROUP_CONTROL_WINDOW_ERROR_KODE = -103;
 	public static final int EXAM_PLAN_WINDOW_ERROR_KODE = -104;
 	public static final int USER_CONTROL_WINDOW_ERROR_KODE = -105;
-
+	public static final int USER_INFORMATION_CHANGE_WINDOW_ERROR_KODE = -106;
+	public static final int USER_STATISTIC_WINDOW_ERROR_KODE = -107;
+	public static final int REPORTS_WINDOW_ERROR_KODE = -108;
 	
 	public static final int DB_ERROR_KODE = -200;
 	
@@ -26,6 +28,7 @@ public class DefaultErrors {
 	public static final String GROUP_CHANGE_ERROR = "Group change error : ";
 	public static final String PLAN_EXAM_ERROR = "Plan exam error : ";
 	public static final String STUDENT_CREATION_ERROR = "Student creation error : ";
+	public static final String STUDENT_INFORMATION_CHANGE_ERROR = "Student information change error : ";
 	
 	
 	public static final String DB_CONNECTION_CREATION_ERROR = "Error in creating a database connection :";
@@ -40,6 +43,9 @@ public class DefaultErrors {
 	public static final String EXAM_PLAN_FRAME_CREATION_ERROR = "Exam plan frame creation error : ";
 	public static final String EXAM_LOAD_ERROR = "Exam load error : ";
 	public static final String USER_CONTROL_MENU_FRAME_CREATION_ERROR = "User control menu frame creation error : ";
+	public static final String UUSER_STATISTIC_FRAME_CREATION_ERROR = "User statistic frame creation error : ";
+	public static final String REPORTS_FRAME_CREATION_ERROR = "Reports frame creation error : ";
+	
 	
 	public static final String USER_CONTROL_FRAME_CREATION_ERROR = "User control frame creation error : ";
 	

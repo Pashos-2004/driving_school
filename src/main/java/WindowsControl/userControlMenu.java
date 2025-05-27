@@ -63,7 +63,8 @@ public class userControlMenu {
 			createTeacher.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					
+					main.JF.dispose();
+					main.JF = userCreate.GetTeacherCreationFrame();
 					
 					
 				}
@@ -95,7 +96,8 @@ public class userControlMenu {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 
-					
+					main.JF.dispose();
+					main.JF = changeUserInformation.GetChangeStudentJF();
 					
 				}
 			});
@@ -108,10 +110,14 @@ public class userControlMenu {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 
-					
+
+					main.JF.dispose();
+					main.JF = changeUserInformation.GetChangeTeacherJF();
 					
 				}
 			});
+			
+			if(!userInfo.role.equals("Суперпользователь")) changeTeacherInformation.setVisible(false);
 			
 			JPanel userControlMenuJPanel = new JPanel();
 			userControlMenuJPanel.setLayout(null);

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -42,7 +43,7 @@ public class userCreate {
 	private static JTextField loginField;
 	private static JPasswordField passwordField1;
 	private static JPasswordField passwordField2;
-	
+	private static JCheckBox isSuperUser;
 	
 	private static JPanel userControlMenuJPanel ;
 	
@@ -63,7 +64,7 @@ public class userCreate {
 			
 			userCreateJF.setVisible(true);
 			userCreateJF.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			userCreateJF.setTitle("Driving school: User control menu");
+			userCreateJF.setTitle("Driving school: User control");
 			
 			userCreateJF.setBounds(commonData.maxScreenWidtn/2-commonData.USER_CREATRE_WINDOW_WIGTH/2,commonData.maxScreenHeigt/2-commonData.USER_CREATRE_WINDOW_HEIGHT/2
 					,commonData.USER_CREATRE_WINDOW_WIGTH,commonData.USER_CREATRE_WINDOW_HEIGHT );
@@ -153,6 +154,106 @@ public class userCreate {
 		return userCreateJF;
 	}
 	
+	public static JFrame GetTeacherCreationFrame() {
+		
+		JFrame studentCreateJF = GetBaseUserCreationFrame();
+		
+		
+		try {
+			
+			//groupComboBox=GetDefaultGroupComboBox();
+			//loadGroupComboBox();
+			
+			isSuperUser = new JCheckBox();
+			isSuperUser.setText("Сделать суперпользователем ?");
+			isSuperUser.setBounds(20,220,230,15);
+			
+			if(!userInfo.role.equals("Суперпользователь")) isSuperUser.setVisible(false);
+			//if(user)
+			
+			JButton addUserBTN = new JButton();
+			addUserBTN.setText("Добавить");
+			addUserBTN.setBounds(40,250,200,20);
+			addUserBTN.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(nameField.getText().equals("") || surnameField.getText().equals("") || patronymicField.getText().equals("") || 
+							loginField.getText().equals("") || new String(passwordField1.getPassword()).equals("") || new String(passwordField2.getPassword()).equals("")) {
+						JOptionPane.showMessageDialog(main.JF, "Пользователь не может быть создан: заполните все поля", 
+				                "Ошибка создания", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					
+					if(passwordField1.getPassword().length<5 ) {
+						JOptionPane.showMessageDialog(main.JF, "Пользователь не может быть создан: пароль слишком короткий", 
+				                "Ошибка создания", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					if(! new String (passwordField1.getPassword()).equals(new String(passwordField2.getPassword()))) {
+						JOptionPane.showMessageDialog(main.JF, "Пользователь не может быть создан: пароли не совпадают", 
+				                "Ошибка создания", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					
+					try {
+						Connection connection =  postgreSQLConnection.GetConnection();
+						Statement statement = connection.createStatement();
+						
+						ResultSet resSet = statement.executeQuery("select * from _user  where login = '" + loginField.getText()+"'");
+						if(resSet.next()) {
+							JOptionPane.showMessageDialog(main.JF, "Пользователь не может быть создан: логин уже занят", 
+					                "Ошибка создания", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						/*
+						statement.execute("insert into _user (name_,surname,patronymic, login , passwd, role_id , group_id, is_deleted )"
+								+ "values ('"+nameField.getText()+"' , '"+surnameField.getText()+"' , '"
+										+patronymicField.getText()+"' , '"+loginField.getText()+"' , '"+passwordHashing.GetPasswordHash(new String(passwordField1.getPassword()))+"' , "
+										+"3"+ " , "+ groups.get(curGroupIndexInArray).groupId +" , false" 
+								+") ");*/
+						int role_id = 2;
+						if(isSuperUser.isSelected()) role_id=1;
+						
+						statement.execute("insert into _user (name_,surname,patronymic, login , passwd, role_id , is_deleted )"
+								+ "values ('"+nameField.getText()+"' , '"+surnameField.getText()+"' , '"
+										+patronymicField.getText()+"' , '"+loginField.getText()+"' , '"+passwordHashing.GetPasswordHash(new String(passwordField1.getPassword()))+"' , "
+										+role_id+" , false" 
+								+") ");
+						JOptionPane.showMessageDialog(main.JF, "Пользователь успешно добавлен", 
+				                "Cоздания пользователя", JOptionPane.INFORMATION_MESSAGE);
+						nameField.setText("");
+						surnameField.setText("");
+						patronymicField.setText("");
+						loginField.setText("");
+						passwordField1.setText("");
+						passwordField2.setText("");
+						if(userInfo.role.equals("Суперпользователь")) isSuperUser.setSelected(false);
+						
+					}catch (Exception e1) {
+						JOptionPane.showMessageDialog(main.JF, "Пользователь не может быть создан: ошибка обращения к БД", 
+				                "Ошибка создания", JOptionPane.ERROR_MESSAGE);
+						LogWriter.WriteLog(DefaultErrors.STUDENT_CREATION_ERROR + "\n "+e1.getMessage());
+					}
+					
+					
+				}
+			});
+			
+			
+			userControlMenuJPanel.add(addUserBTN);
+			userControlMenuJPanel.add(isSuperUser);
+			//userControlMenuJPanel.add(groupComboBox);
+			
+		}catch (Exception e) {
+			LogWriter.WriteLog(DefaultErrors.USER_CONTROL_FRAME_CREATION_ERROR + "\n "+e.getMessage());
+			System.exit(DefaultErrors.USER_CONTROL_WINDOW_ERROR_KODE);
+		}
+		
+		
+		
+		return studentCreateJF;
+	}
 	
 	public static JFrame GetStudentCreationFrame() {
 		
@@ -214,6 +315,12 @@ public class userCreate {
 						LogWriter.WriteLog(DefaultErrors.STUDENT_CREATION_ERROR + "\n "+e1.getMessage());
 					}
 					
+					nameField.setText("");
+					surnameField.setText("");
+					patronymicField.setText("");
+					loginField.setText("");
+					passwordField1.setText("");
+					passwordField2.setText("");
 					
 				}
 			});
