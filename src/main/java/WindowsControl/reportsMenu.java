@@ -68,13 +68,25 @@ public class reportsMenu {
 			
 			JButton reportOnGroup = new JButton();
 			
-			reportOnUser.setBounds(20, 20, 240, 20);
-			reportOnUser.setText("Статистика ученика");
-			reportOnUser.addActionListener(new ActionListener() {
+			reportOnGroup.setBounds(20, 50, 240, 20);
+			reportOnGroup.setText("Отчёт по группе");
+			reportOnGroup.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					main.JF.dispose();
-					main.JF = userStatisticReport.GetUserStatisticReportsMenuJF();
+					main.JF = reportOnGroupMenu.GetReportOnGroupMenuJF();
+				}
+			});
+			
+			JButton reportOnGroups = new JButton();
+			
+			reportOnGroups.setBounds(20, 80, 240, 20);
+			reportOnGroups.setText("Отчёт по группам");
+			reportOnGroups.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					main.JF.dispose();
+					main.JF = reportOnGroupsMenu.GetReportOnGroupsMenuJF();
 				}
 			});
 			
@@ -82,9 +94,9 @@ public class reportsMenu {
 			reportsMenuJP.setLayout(null);
 			reportsMenuJP.add(backBTN);
 			reportsMenuJP.add(reportOnUser);
-			reportsMenuJP.add(backBTN);
-			reportsMenuJP.add(backBTN);
-			reportsMenuJP.add(backBTN);
+			reportsMenuJP.add(reportOnGroup);
+			reportsMenuJP.add(reportOnGroups);
+			//reportsMenuJP.add(backBTN);
 			
 			reportsMenuJF.add(reportsMenuJP);
 			

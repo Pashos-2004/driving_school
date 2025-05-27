@@ -34,6 +34,7 @@ public class DefaultErrors {
 	public static final String DB_CONNECTION_CREATION_ERROR = "Error in creating a database connection :";
 	public static final String DB_INSERT_ERROR = "Error in inserting in database : ";
 	
+	public static final String ECXEL_WRITE_ERROR = "EXCEL write error : ";
 	
 	public static final String AUTH_ERROR = "Authorization error : ";
 	public static final String USER_LOAD_ERROR = "User info load error : ";
